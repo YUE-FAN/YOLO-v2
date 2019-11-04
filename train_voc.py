@@ -22,7 +22,8 @@ def get_args():
     parser.add_argument("--image_size", type=int, default=448, help="The common width and height for all images")  #TODO: multi-scale training
     parser.add_argument("--batch_size", type=int, default=16, help="The number of images per batch")
     parser.add_argument("--lr", type=float, default=0.01)
-    parser.add_argument('--shuffle', action='store_true', help='shuffle the last layer or not')
+    # parser.add_argument('--shuffle', action='store_true', help='shuffle the last layer or not')
+    parser.add_argument('--layer', type=int)
     parser.add_argument("--momentum", type=float, default=0.9)
     parser.add_argument("--decay", type=float, default=0.0005)
     parser.add_argument("--num_epoches", type=int, default=300)
@@ -82,21 +83,25 @@ def train(opt):
             # you will see the loss is already very small at the beginning.
             nn.init.normal_(list(model.modules())[-1].weight, 0, 0.01)
         elif opt.pre_trained_model_type == "params":
-            model = Yolo(training_set.num_classes, shuffle=opt.shuffle)
+            # model = Yolo(training_set.num_classes, shuffle=opt.shuffle)
+            model = Yolo(training_set.num_classes, layer=opt.layer)
             model.load_state_dict(torch.load(opt.pre_trained_model_path))
             nn.init.normal_(list(model.modules())[-1].weight, 0, 0.01)
         else:
-            model = Yolo(training_set.num_classes, shuffle=opt.shuffle)
+            # model = Yolo(training_set.num_classes, shuffle=opt.shuffle)
+            model = Yolo(training_set.num_classes, layer=opt.layer)
     else:
         if opt.pre_trained_model_type == "model":
             model = torch.load(opt.pre_trained_model_path, map_location=lambda storage, loc: storage)
             nn.init.normal_(list(model.modules())[-1].weight, 0, 0.01)
         elif opt.pre_trained_model_type == "params":
-            model = Yolo(training_set.num_classes, shuffle=opt.shuffle)
+            # model = Yolo(training_set.num_classes, shuffle=opt.shuffle)
+            model = Yolo(training_set.num_classes, layer=opt.layer)
             model.load_state_dict(torch.load(opt.pre_trained_model_path, map_location=lambda storage, loc: storage))
             nn.init.normal_(list(model.modules())[-1].weight, 0, 0.01)
         else:
-            model = Yolo(training_set.num_classes, shuffle=opt.shuffle)
+            # model = Yolo(training_set.num_classes, shuffle=opt.shuffle)
+            model = Yolo(training_set.num_classes, layer=opt.layer)
 
     # log_path = os.path.join(opt.log_path, "{}".format(opt.year))
     log_path = opt.log_path
