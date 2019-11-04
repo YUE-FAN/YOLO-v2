@@ -43,6 +43,8 @@ def test(opt):
             model = Yolo(20)
             model.load_state_dict(torch.load(opt.pre_trained_model_path, map_location=lambda storage, loc: storage))
     model.eval()
+    if torch.cuda.is_available():
+        model.cuda()
     colors = pickle.load(open("src/pallete", "rb"))
 
     for image_path in glob.iglob(opt.input + os.sep + '*.jpg'):
